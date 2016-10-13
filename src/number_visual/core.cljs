@@ -3,17 +3,27 @@
 
 (enable-console-print!)
 
-(println "This text is printed from src/number-visual/core.cljs. Go ahead and edit it and see reloading in action.")
-
 ;; define your app data so that it doesn't get over-written on reload
 
-(defonce app-state (atom {:text "Lets look at numbers!"}))
+(defn make-points
+  "selects evenly spaced points around a circle"
+  [number]
+  (for [i (map inc (range number))]
+        [:circle {:r 10
+                  :cy (- 50 (* 40 (Math/cos (/ (* i (* 2 Math/PI)) number))))
+                  :cx (+ 50 (* 40 (Math/sin (/ (* i (* 2 Math/PI)) number))))}]))
+
+(defonce app-state (atom {:text "Let's look at a number!"
+                          :number 2}))
 
 (defn number-visual []
-  [:div
+  [:center
    [:h1 (:text @app-state)]
    [:svg
-    [:circle {:r 10 :cx 10 :cy 10}]]])
+    {:view-box "0 0 100 100"
+     :width 500
+     :height 500}
+    (make-points 7)]])
 
 (reagent/render-component [number-visual]
                           (. js/document (getElementById "app")))
@@ -23,3 +33,4 @@
   ;; your application
   ;; (swap! app-state update-in [:__figwheel_counter] inc)
 )
+
